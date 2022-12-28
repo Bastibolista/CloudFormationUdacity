@@ -35,13 +35,9 @@ jobs:
           command: |
             apk add --update ansible
       - run:
-          name: Ver ssh keys
+          name: add ssh
           command: |
-            ls -la ~/.ssh/
-      - run:
-          name: Ver fingerprint
-          command: |
-            cat ~/.ssh/id_rsa_113cd99c460c5802f9090bb98921681c
+            ssh-add ~/.ssh/id_rsa_113cd99c460c5802f9090bb98921681c
       - run:
           name: Run Playbook and Configure server
           command: |
