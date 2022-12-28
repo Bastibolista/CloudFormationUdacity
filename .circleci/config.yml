@@ -23,7 +23,7 @@ jobs:
   #        - "*"
   configure_infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: rastasheep/ubuntu-sshd
     steps:
       - checkout
       - add_ssh_keys:
