@@ -37,7 +37,7 @@ jobs:
       - run:
           name: add ssh
           command: |
-            ssh-add ~/.ssh/id_rsa_113cd99c460c5802f9090bb98921681c
+            ssh ubuntu@ec2-52-54-216-236.compute-1.amazonaws.com
       - run:
           name: Run Playbook and Configure server
           command: |
