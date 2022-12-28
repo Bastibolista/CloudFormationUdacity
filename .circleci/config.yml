@@ -1,18 +1,29 @@
 version: 2.1
+commands:
+  # Exercise - Rollback
+  destroy_environment:
+    steps:
+      - run:
+          name: Destroy environment
+          # ${CIRCLE_WORKFLOW_ID} is a Built-in environment variable 
+          # ${CIRCLE_WORKFLOW_ID:0:5} takes the first 5 chars of the variable CIRCLE_CI_WORKFLOW_ID 
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7}
 # Use a package of configuration called an orb.
 jobs:
-  #create_infrastructure: 
-  #  docker:
-  #    - image: amazon/aws-cli
-  #  steps:
-  #    - checkout
-  #    - run:
-  #        name: Create Cloudformation Stack
-  #        command: |
-  #          aws cloudformation deploy \
-  #            --template-file template.yml \
-  #            --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
-  #            --region us-east-1
+  create_infrastructure: 
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Create Cloudformation Stack
+          command: |
+            aws cloudformation deploy \
+              --template-file template.yml \
+              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+              --region us-east-1
   #upload_files:
   #  docker:
   #    - image: circleci/node:13.8.0
@@ -21,46 +32,39 @@ jobs:
   #      root: ~/
   #      paths:
   #        - "*"
-  configure_infrastructure:
-    docker:
-      - image: python:3.9.16
-    steps:
-      - checkout
-      - add_ssh_keys:
-          # You can get this ID in the section where you registered the SSH Key
-          fingerprints:
-            - "11:3c:d9:9c:46:0c:58:02:f9:09:0b:b9:89:21:68:1c"
-      - run:
-          name: Install Ansible
-          command: |
-            # apk add --update ansible
-            apt-get update -y
-            apt install ansible -y
-            which ansible
-      - run:
-          name: Run Playbook and Configure server
-          command: |
-            ansible-playbook -i inventory main.yml -vvv
+  #configure_infrastructure:
+  #  docker:
+  #    - image: python:3.9.16
+  #  steps:
+  #    - checkout
+  #    - add_ssh_keys:
+  #        # You can get this ID in the section where you registered the SSH Key
+  #        fingerprints:
+  #          - "11:3c:d9:9c:46:0c:58:02:f9:09:0b:b9:89:21:68:1c"
+  #    - run:
+  #        name: Install Ansible
+  #        command: |
+  #          # apk add --update ansible
+  #          apt-get update -y
+  #          apt install ansible -y
+  #          which ansible
+  #    - run:
+  #        name: Run Playbook and Configure server
+  #        command: |
+  #          ansible-playbook -i inventory main.yml -vvv
   smoke_test:
    docker:
      - image: alpine:latest
    steps:
-     - run: apk add --update curl
-     - run:
-         name: smoke test
-         command: |
-           URL="https://blog.udacity.com/"
-           # Test if website exists
-           if curl -s --head ${URL} 
-           then
-             return 0
-           else
-             return 1
-           fi
+    - run:
+        name: Test job
+        # Fail the job intentionally to simulate an error.
+        command:  return 1
+    - destroy_environment 
 # Sequential workflow
 workflows:
   # Name the workflow
   myWorkflow:
     jobs:
-      - configure_infrastructure
+      - create_infrastructure
       - smoke_test
