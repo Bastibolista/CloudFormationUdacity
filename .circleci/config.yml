@@ -35,6 +35,10 @@ jobs:
           command: |
             apk add --update ansible
       - run:
+          name: Ver ssh keys
+          command: |
+            ls -la ~/.ssh/
+      - run:
           name: Run Playbook and Configure server
           command: |
             ansible-playbook -i inventory main.yml -vvv
