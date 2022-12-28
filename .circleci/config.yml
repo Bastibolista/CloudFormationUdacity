@@ -23,7 +23,7 @@ jobs:
   #        - "*"
   configure_infrastructure:
     docker:
-      - image: rastasheep/ubuntu-sshd
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
       - add_ssh_keys:
@@ -37,7 +37,7 @@ jobs:
       - run:
           name: add ssh
           command: |
-            ssh ubuntu@ec2-52-54-216-236.compute-1.amazonaws.com
+            ping ec2-52-54-216-236.compute-1.amazonaws.com
       - run:
           name: Run Playbook and Configure server
           command: |
