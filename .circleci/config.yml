@@ -28,16 +28,12 @@ jobs:
       - checkout
       - add_ssh_keys:
           # You can get this ID in the section where you registered the SSH Key
-          fingerprints: 
-            - "11:3c:d9:9c:46:0c:58:02:f9:09:0b:b9:89:21:68:1c" 
+          fingerprints:
+            - "11:3c:d9:9c:46:0c:58:02:f9:09:0b:b9:89:21:68:1c"
       - run:
           name: Install Ansible
           command: |
             apk add --update ansible
-      - run:
-          name: add ssh
-          command: |
-            ping ec2-52-54-216-236.compute-1.amazonaws.com
       - run:
           name: Run Playbook and Configure server
           command: |
