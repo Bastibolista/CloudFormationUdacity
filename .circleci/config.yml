@@ -34,7 +34,6 @@ jobs:
           name: Install Ansible
           command: |
             # apk add --update ansible
-            apt-get update -y
             apt install ansible -y
             which ansible
       - run:
